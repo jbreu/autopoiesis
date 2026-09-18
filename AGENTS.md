@@ -6,6 +6,7 @@ to develop it. Read README.md and docs/architecture.md before changing the harne
 ## Scope and verification
 
 - Follow the user's concrete task and acceptance criteria.
+- Use English for repository documentation, code comments, and user-facing text.
 - Application code is in src/repo_demo; behavioral tests are in tests.
 - Preserve the documented CLI behavior unless the task asks to change it.
 - Keep the example's runtime dependency-free where practical.
