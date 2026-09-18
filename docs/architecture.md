@@ -1,58 +1,58 @@
-# Architektur
+# Architecture
 
-## Ablauf
+## Workflow
 
-1. Der Benutzer erteilt einen Auftrag in Agent Canvas.
-2. Die Harness liest das Projekt in /projects/app und spricht mit dem ausgewählten
-   Modellanbieter. Dateizugriffe, Codeausführung und Git-Kommandos erfolgen im Container.
-3. Der Agent entwickelt auf einem ai/*-Branch und prüft mit scripts/check.sh.
-4. Mit konfiguriertem GH_TOKEN kann er den Branch pushen und einen Draft-PR erstellen.
-5. GitHub Actions prüft Code und Container; der Benutzer entscheidet über den Merge.
+1. The user assigns a task in Agent Canvas.
+2. The harness reads the project in /projects/app and communicates with the selected
+   model provider. File access, code execution, and Git commands run inside the container.
+3. The agent works on an ai/* branch and runs scripts/check.sh.
+4. With GH_TOKEN configured, it can push the branch and create a draft PR.
+5. GitHub Actions checks the code and container; the user decides whether to merge.
 
-## Zuständigkeiten
+## Responsibilities
 
-| Bestandteil | Verantwortlich für |
+| Component | Responsibility |
 | --- | --- |
-| src/repo_demo und tests | Beispielanwendung und Verhaltenstests |
-| Dockerfile.agent | OpenHands-Basisimage, Python-Tools und GitHub CLI |
-| compose.yaml | Lokalen Start, Workspace, Ressourcen und persistente Daten |
-| AGENTS.md | Projektwissen und vereinbarten Arbeitsablauf |
-| scripts/check.sh | Gemeinsame Prüfungen für Mensch, Agent und CI |
-| .github/workflows/ci.yml | Unabhängige Prüfungen im CI-Runner |
-| .devcontainer/devcontainer.json | Optionalen interaktiven IDE-Zugang |
+| src/repo_demo and tests | Example application and behavioral tests |
+| Dockerfile.agent | OpenHands base image, Python tools, and GitHub CLI |
+| compose.yaml | Local startup, workspace, resources, and persistent data |
+| AGENTS.md | Project knowledge and agreed workflow |
+| scripts/check.sh | Shared checks for developers, agents, and CI |
+| .github/workflows/ci.yml | Independent checks on the CI runner |
+| .devcontainer/devcontainer.json | Optional interactive IDE access |
 
-## Warum die Projekt-Tools isoliert installiert werden
+## Why project tools are installed separately
 
-OpenHands bringt eine eigene Python-Umgebung mit. Das Beispiel installiert seine
-Entwicklungswerkzeuge in /opt/poc-tools und verwendet PROJECT_PYTHON explizit.
-Der PATH der Harness bleibt erhalten, damit deren Entrypoint weiterhin die
-ursprünglichen Pakete findet. Der eigene Entrypoint ergänzt die Git-Konfiguration
-und startet anschließend den offiziellen OpenHands-Entrypoint.
+OpenHands includes its own Python environment. The example installs its
+development tools in /opt/poc-tools and explicitly uses PROJECT_PYTHON.
+The harness PATH is preserved so its entrypoint can still find the original
+packages. The custom entrypoint adds Git configuration and then starts the
+official OpenHands entrypoint.
 
-## Zustand und Grenzen
+## State and limitations
 
-Der komplette Checkout einschließlich .git wird schreibbar eingebunden. Ein Commit
-überlebt somit einen Container-Neustart auch ohne Push. .env ist lokal und ignoriert;
-Container-Umgebung und gemountete Dateien sind für den Agenten grundsätzlich lesbar.
-Ein separater, nur für dieses Repo berechtigter Token begrenzt dessen GitHub-Zugang.
-Die Containerisierung ist keine Isolation gegenüber einem vom Agenten lesbaren Secret.
+The entire checkout, including .git, is mounted with write access. Commits
+therefore survive container restarts even without a push. The .env file is
+local and ignored by Git; the agent can generally read the container environment
+and mounted files. A separate token scoped to this repository limits its GitHub
+access. Containerization does not protect secrets that the agent can read.
 
-Das Volume enthält Sitzungen, Einstellungen und Modellzugänge. Es gehört nicht zur
-Git-Historie. Für einen neuen Rechner werden Repo, Laufzeitkonfiguration und bei
-gewünschter Session-Kontinuität ein Backup des Volumes benötigt.
+The volume contains sessions, settings, and model credentials. It is not part of
+the Git history. Moving to a new machine requires the repository, runtime
+configuration, and a volume backup if you want to preserve sessions.
 
-Die Healthcheck prüft HTTP und Content-Type der Weboberfläche sowie /ready des
-Backends. Ein tatsächlicher Modellauftrag und ein GitHub-Push benötigen eigene
-Zugangsdaten und sind als manueller
-End-to-End-Test vorgesehen. Die maximale Reparaturzahl in AGENTS.md ist eine Anweisung;
-ein technisch erzwungenes Auftragszeitlimit benötigt einen externen Dispatcher.
+The health check verifies the web UI's HTTP response and Content-Type, as well
+as the backend's /ready endpoint. An actual model task and GitHub push require
+your own credentials and are intended to be checked in a manual end-to-end test.
+The maximum number of repair attempts in AGENTS.md is an instruction; enforcing
+a task time limit requires an external dispatcher.
 
-## Ausbau
+## Future extensions
 
-- Chat: authentifizierter Adapter ordnet einen Chat einer Agentensitzung zu.
-- Warteschlange: speichert Auftrag, Ausgangscommit, Branch, Session-ID und Status.
-- Parallelität: eigener Clone oder Worktree je Auftrag; keine gemeinsam
-  beschriebene Arbeitskopie.
-- Automatisierung: explizite Issues/Labels oder CI-Ereignisse als Aufgabenquelle;
-  maximale Laufzeit und Budget außerhalb des veränderbaren Checkouts kontrollieren.
-- GitLab: Git-Zugriff und PR-Helfer durch passende GitLab-Konfiguration ersetzen.
+- Chat: an authenticated adapter maps a chat to an agent session.
+- Queue: stores the task, starting commit, branch, session ID, and status.
+- Parallel execution: a separate clone or worktree per task, with no shared
+  working copy being modified concurrently.
+- Automation: explicit issues/labels or CI events provide tasks; enforce runtime
+  and budget limits outside the mutable checkout.
+- GitLab: replace Git access and PR helpers with the corresponding GitLab configuration.

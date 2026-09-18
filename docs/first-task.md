@@ -1,21 +1,21 @@
-# Erster Entwicklungsauftrag
+# First development task
 
-Diesen Auftrag nach Einrichtung von Modell- und GitHub-Zugang in der
-Weboberfläche verwenden. Das Projektverzeichnis ist /projects/app.
+Use this task in the web interface after configuring model and GitHub access.
+The project directory is /projects/app.
 
-> Lies AGENTS.md und README.md. Erweitere die Beispiel-CLI um eine Option --json.
-> Sie soll ein JSON-Objekt mit den Integer-Feldern characters, words und lines
-> ausgeben. Ohne --json soll die bestehende Textausgabe unverändert bleiben.
-> Die Option muss sowohl mit einem Textargument als auch mit stdin funktionieren.
-> Ergänze Verhaltenstests, auch für leeren Text und Unicode-Eingaben, und führe
-> sh scripts/check.sh aus. Arbeite auf einem neuen ai/json-output-Branch,
-> committe die Änderung, pushe den Branch und öffne einen Draft-PR gegen main.
-> Beschreibe im PR die Änderung und die ausgeführten Prüfungen. Stoppe danach.
+> Read AGENTS.md and README.md. Extend the example CLI with a --json option.
+> It should output a JSON object with the integer fields characters, words,
+> and lines. Without --json, preserve the existing text output.
+> The option must work with both a text argument and stdin.
+> Add behavioral tests, including empty text and Unicode input, and run
+> sh scripts/check.sh. Work on a new ai/json-output branch,
+> commit the change, push the branch, and open a draft PR against main.
+> Describe the change and the checks you ran in the PR. Stop afterwards.
 
-## Akzeptanzkriterien
+## Acceptance criteria
 
-- JSON wird mit einem echten Parser überprüft und enthält genau die drei Felder.
-- Bestehende CLI-Tests bleiben erfolgreich.
-- Der PR enthält die Implementierung und die relevanten Tests.
-- GitHub Actions ist erfolgreich; die lokale Agentenantwort allein gilt nicht
-  als unabhängiger CI-Nachweis.
+- Validate JSON with a real parser and verify that it contains exactly the three fields.
+- Existing CLI tests continue to pass.
+- The PR includes the implementation and relevant tests.
+- GitHub Actions passes; the local agent response alone does not count as
+  independent CI evidence.
