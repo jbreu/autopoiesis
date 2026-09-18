@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1.7
+ARG AGENT_CANVAS_IMAGE=ghcr.io/openhands/agent-canvas:1.20.0
+FROM ${AGENT_CANVAS_IMAGE}
+
+USER root
+ARG AGENT_UID=1000
+ARG AGENT_GID=1000
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       ca-certificates git gh make python3-venv passwd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Match the bind-mounted checkout's owner on Linux. Keep the upstream account.
+RUN test "${AGENT_UID}" -gt 0 && test "${AGENT_GID}" -gt 0 \
+    && groupmod -o -g "${AGENT_GID}" openhands \
+    && usermod -o -u "${AGENT_UID}" -g "${AGENT_GID}" openhands \
+    && chown -R openhands:openhands /home/openhands /projects
+
+# Project tooling has its own interpreter, preserving the harness environment.
+COPY requirements-dev.txt /tmp/poc-requirements-dev.txt
+RUN python3 -m venv /opt/poc-tools \
+    && /opt/poc-tools/bin/python -m pip install --no-cache-dir \
+       -r /tmp/poc-requirements-dev.txt \
+    && rm /tmp/poc-requirements-dev.txt
+
+COPY --chmod=755 scripts/agent-entrypoint.sh /usr/local/bin/poc-entrypoint
+COPY scripts/container_healthcheck.py /opt/poc-healthcheck.py
+
+ENV PROJECT_PYTHON=/opt/poc-tools/bin/python \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+USER openhands
+WORKDIR /projects/app
+ENTRYPOINT ["tini", "--", "/usr/local/bin/poc-entrypoint"]

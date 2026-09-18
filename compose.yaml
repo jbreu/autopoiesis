@@ -1,0 +1,42 @@
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        AGENT_CANVAS_IMAGE: ${AGENT_CANVAS_IMAGE:-ghcr.io/openhands/agent-canvas:1.20.0}
+        AGENT_UID: ${AGENT_UID:-1000}
+        AGENT_GID: ${AGENT_GID:-1000}
+    ports:
+      - "127.0.0.1:${AGENT_PORT:-8000}:8000"
+    environment:
+      PORT: "8000"
+      LOCAL_BACKEND_API_KEY: ${LOCAL_BACKEND_API_KEY:?Run python3 scripts/init_env.py first}
+      OH_SESSION_API_KEYS_0: ${LOCAL_BACKEND_API_KEY:?Run python3 scripts/init_env.py first}
+      OH_SECRET_KEY: ${OH_SECRET_KEY:?Run python3 scripts/init_env.py first}
+      AGENT_CANVAS_DISABLE_TELEMETRY: "1"
+      AGENT_GIT_NAME: ${AGENT_GIT_NAME:-AI Development Bot}
+      AGENT_GIT_EMAIL: ${AGENT_GIT_EMAIL:-ai-dev-bot@example.invalid}
+      GH_TOKEN: ${GH_TOKEN:-}
+      GH_PROMPT_DISABLED: "1"
+      GIT_TERMINAL_PROMPT: "0"
+    volumes:
+      - .:/projects/app
+      - agent-state:/home/openhands/.openhands
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 4g
+    cpus: 2
+    pids_limit: 512
+    healthcheck:
+      test: ["CMD", "python3", "/opt/poc-healthcheck.py"]
+      interval: 10s
+      timeout: 8s
+      start_period: 45s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  agent-state:

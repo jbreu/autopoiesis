@@ -1,0 +1,6 @@
+**
+!Dockerfile.agent
+!requirements-dev.txt
+!scripts/
+!scripts/agent-entrypoint.sh
+!scripts/container_healthcheck.py
