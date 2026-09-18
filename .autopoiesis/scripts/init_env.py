@@ -6,6 +6,8 @@ from pathlib import Path
 
 
 def initialize(root: Path) -> bool:
+    for directory in ("state", "tmp", "cache"):
+        (root / directory).mkdir(mode=0o700, exist_ok=True)
     template = (root / ".env.example").read_text(encoding="utf-8")
     template = template.replace(
         "LOCAL_BACKEND_API_KEY=change-me", "LOCAL_BACKEND_API_KEY=" + secrets.token_hex(32)
@@ -25,4 +27,8 @@ def initialize(root: Path) -> bool:
 
 if __name__ == "__main__":
     created = initialize(Path(__file__).resolve().parents[1])
-    print("Created .env with local secrets." if created else ".env already exists; left unchanged.")
+    print(
+        "Created .autopoiesis/.env with local secrets."
+        if created
+        else ".autopoiesis/.env already exists; left unchanged."
+    )

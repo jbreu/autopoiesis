@@ -8,7 +8,7 @@ The project directory is /projects/app.
 > and lines. Without --json, preserve the existing text output.
 > The option must work with both a text argument and stdin.
 > Add behavioral tests, including empty text and Unicode input, and run
-> sh scripts/check.sh. Work on a new ai/json-output branch,
+> sh .autopoiesis/scripts/check.sh. Work on a new ai/json-output branch,
 > commit the change, push the branch, and open a draft PR against main.
 > Describe the change and the checks you ran in the PR. Stop afterwards.
 

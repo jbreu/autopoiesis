@@ -20,8 +20,9 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: python -m pip install -r requirements-dev.txt
-      - run: sh scripts/check.sh
+          cache-dependency-path: .autopoiesis/requirements-dev.txt
+      - run: python -m pip install -r .autopoiesis/requirements-dev.txt
+      - run: sh .autopoiesis/scripts/check.sh
       - name: Build and smoke-test the distributable
         run: |
           python -m pip wheel --no-deps --wheel-dir dist .
@@ -34,6 +35,9 @@ jobs:
     name: Container smoke test
     runs-on: ubuntu-24.04
     timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: .autopoiesis
     steps:
       - uses: actions/checkout@v4
       - name: Create isolated runtime configuration
@@ -46,8 +50,8 @@ jobs:
         run: docker compose up -d --wait --wait-timeout 180
       - name: Verify the mounted development environment
         run: |
-          docker compose exec -T agent sh scripts/check.sh
-          docker compose exec -T agent sh -c 'test -w /projects/app && test -w /home/openhands/.openhands'
+          docker compose exec -T agent sh .autopoiesis/scripts/check.sh
+          docker compose exec -T agent python3 .autopoiesis/scripts/smoke_container.py
           docker compose exec -T agent git status --short
       - name: Show logs on failure
         if: failure()

@@ -5,7 +5,7 @@
 1. The user assigns a task in Agent Canvas.
 2. The harness reads the project in /projects/app and communicates with the selected
    model provider. File access, code execution, and Git commands run inside the container.
-3. The agent works on an ai/* branch and runs scripts/check.sh.
+3. The agent works on an ai/* branch and runs .autopoiesis/scripts/check.sh.
 4. With GH_TOKEN configured, it can push the branch and create a draft PR.
 5. GitHub Actions checks the code and container; the user decides whether to merge.
 
@@ -14,12 +14,19 @@
 | Component | Responsibility |
 | --- | --- |
 | src/repo_demo and tests | Example application and behavioral tests |
-| Dockerfile.agent | OpenHands base image, Python tools, and GitHub CLI |
-| compose.yaml | Local startup, workspace, resources, and persistent data |
+| .autopoiesis/Dockerfile.agent | OpenHands base image, Python tools, and GitHub CLI |
+| .autopoiesis/compose.yaml | Local startup, workspace, resources, and persistent data |
 | AGENTS.md | Project knowledge and agreed workflow |
-| scripts/check.sh | Shared checks for developers, agents, and CI |
+| .autopoiesis/scripts/check.sh | Shared checks for developers, agents, and CI |
+| .autopoiesis/tests | Harness initialization regression tests |
+| .autopoiesis/state, tmp, cache | Ignored runtime data, temporary files, and caches |
 | .github/workflows/ci.yml | Independent checks on the CI runner |
-| .devcontainer/devcontainer.json | Optional interactive IDE access |
+| .autopoiesis/.devcontainer/devcontainer.json | Optional interactive IDE access |
+
+Paths in this table are relative to the repository root. Open .autopoiesis in
+VS Code to discover its Dev Container; the container workspace is still the
+full repository. GitHub requires its workflow entrypoint in .github/workflows.
+AGENTS.md stays at the repository root for agent discovery.
 
 ## Why project tools are installed separately
 
@@ -32,14 +39,22 @@ official OpenHands entrypoint.
 ## State and limitations
 
 The entire checkout, including .git, is mounted with write access. Commits
-therefore survive container restarts even without a push. The .env file is
+therefore survive container restarts even without a push. The .autopoiesis/.env file is
 local and ignored by Git; the agent can generally read the container environment
 and mounted files. A separate token scoped to this repository limits its GitHub
 access. Containerization does not protect secrets that the agent can read.
 
-The volume contains sessions, settings, and model credentials. It is not part of
-the Git history. Moving to a new machine requires the repository, runtime
-configuration, and a volume backup if you want to preserve sessions.
+The .autopoiesis/state bind mount contains sessions, settings, and model
+credentials. It is not part of Git history. Moving to a new machine requires
+the repository, .autopoiesis/.env, and a stopped-state backup to preserve sessions.
+The old autopoiesis_agent-state volume is not used by this layout.
+
+The container's /tmp and user cache are also bind-mounted under .autopoiesis.
+TMPDIR, TMP, TEMP, and XDG_CACHE_HOME point to those mounts. Agent instructions
+put scratch files in .autopoiesis/tmp. This directs standard temporary-file APIs
+and explicit /tmp writes into the harness directory; an agent can still write
+elsewhere in the checkout. The image build context is only .autopoiesis and its
+allowlist excludes runtime state, secrets, caches, and temporary files.
 
 The health check verifies the web UI's HTTP response and Content-Type, as well
 as the backend's /ready endpoint. An actual model task and GitHub push require
