@@ -1,3 +1,5 @@
+name: autopoiesis
+
 services:
   agent:
     build:
@@ -11,18 +13,25 @@ services:
       - "127.0.0.1:${AGENT_PORT:-8000}:8000"
     environment:
       PORT: "8000"
-      LOCAL_BACKEND_API_KEY: ${LOCAL_BACKEND_API_KEY:?Run python3 scripts/init_env.py first}
-      OH_SESSION_API_KEYS_0: ${LOCAL_BACKEND_API_KEY:?Run python3 scripts/init_env.py first}
-      OH_SECRET_KEY: ${OH_SECRET_KEY:?Run python3 scripts/init_env.py first}
+      LOCAL_BACKEND_API_KEY: ${LOCAL_BACKEND_API_KEY:?Run python3 .autopoiesis/scripts/init_env.py from the repository root first}
+      OH_SESSION_API_KEYS_0: ${LOCAL_BACKEND_API_KEY:?Run python3 .autopoiesis/scripts/init_env.py from the repository root first}
+      OH_SECRET_KEY: ${OH_SECRET_KEY:?Run python3 .autopoiesis/scripts/init_env.py from the repository root first}
       AGENT_CANVAS_DISABLE_TELEMETRY: "1"
       AGENT_GIT_NAME: ${AGENT_GIT_NAME:-AI Development Bot}
       AGENT_GIT_EMAIL: ${AGENT_GIT_EMAIL:-ai-dev-bot@example.invalid}
       GH_TOKEN: ${GH_TOKEN:-}
       GH_PROMPT_DISABLED: "1"
       GIT_TERMINAL_PROMPT: "0"
+      TMPDIR: /tmp
+      TMP: /tmp
+      TEMP: /tmp
+      XDG_CACHE_HOME: /home/openhands/.cache
+      RUFF_CACHE_DIR: /projects/app/.autopoiesis/cache/ruff
     volumes:
-      - .:/projects/app
-      - agent-state:/home/openhands/.openhands
+      - ..:/projects/app
+      - ./state:/home/openhands/.openhands
+      - ./tmp:/tmp
+      - ./cache:/home/openhands/.cache
     cap_drop:
       - ALL
     security_opt:
@@ -37,6 +46,3 @@ services:
       start_period: 45s
       retries: 12
     restart: unless-stopped
-
-volumes:
-  agent-state:

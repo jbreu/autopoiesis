@@ -11,5 +11,4 @@ build/
 dist/
 .coverage
 htmlcov/
-.agent-state/
 .DS_Store
