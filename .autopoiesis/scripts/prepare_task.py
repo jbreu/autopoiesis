@@ -77,13 +77,23 @@ def prepare_task_branch(
 
     active = repo_info(working_dir)
     target = active[0] if active is not None and active[1] == canonical_common else canonical_top
+    linked_worktree = target != canonical_top
 
     branch = current_branch(target)
-    if branch.startswith(TASK_BRANCH_PREFIXES) and branch not in PROTECTED_BRANCHES:
+    desired_branch = f"ai/{normalize_slug(task_name)}"
+
+    if linked_worktree and branch not in PROTECTED_BRANCHES:
         return target, branch, False
+    if branch == desired_branch:
+        return target, branch, False
+    if branch.startswith(TASK_BRANCH_PREFIXES):
+        raise TaskBranchError(
+            f"Canonical checkout is already assigned to task branch {branch}; "
+            "finish that task or return it to its base branch first."
+        )
 
     ensure_clean(target)
-    branch = f"ai/{normalize_slug(task_name)}"
+    branch = desired_branch
     branch_ref = run_git(
         target, "show-ref", "--verify", "--quiet", f"refs/heads/{branch}"
     )
