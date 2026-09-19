@@ -69,6 +69,19 @@ class PrepareTaskTests(unittest.TestCase):
             self.assertFalse(created)
             self.assertEqual(run(repo, "branch", "--show-current"), "main")
 
+    def test_refuses_to_reuse_different_task_branch_in_canonical_checkout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = init_repo(root)
+            scratch = root / "scratch"
+            scratch.mkdir()
+            run(repo, "switch", "-c", "ai/previous-task")
+
+            with self.assertRaises(prepare_task.TaskBranchError):
+                prepare_task.prepare_task_branch(repo, scratch, "next task")
+
+            self.assertEqual(run(repo, "branch", "--show-current"), "ai/previous-task")
+
     def test_refuses_to_branch_from_dirty_fallback_checkout(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
