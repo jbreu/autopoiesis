@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Select or create the isolated Git branch used for an Autopoiesis task."""
 
-from __future__ import annotations
-
 import argparse
 import os
 import re
