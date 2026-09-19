@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Select or create the isolated Git branch used for an Autopoiesis task."""
 
-import argparse
-import os
+from argparse import ArgumentParser
+from os import environ
 from pathlib import Path
-import re
-import subprocess
+from re import sub
+from subprocess import CompletedProcess, run
 
 
 PROTECTED_BRANCHES = {"main", "master"}
@@ -16,8 +16,8 @@ class TaskBranchError(RuntimeError):
     """Raised when a safe task branch cannot be prepared."""
 
 
-def run_git(path: Path, *args: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
+def run_git(path: Path, *args: str) -> CompletedProcess[str]:
+    return run(
         ["git", "-C", str(path), *args],
         check=False,
         capture_output=True,
@@ -45,7 +45,7 @@ def repo_info(path: Path) -> tuple[Path, Path] | None:
 
 
 def normalize_slug(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    slug = sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
     if not slug:
         raise TaskBranchError("Task name must contain at least one letter or digit.")
     return slug[:60].rstrip("-")
@@ -103,11 +103,11 @@ def prepare_task_branch(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument("task_name", help="Short name used if an ai/* branch must be created")
     args = parser.parse_args()
 
-    repo_root = Path(os.environ.get("AUTOPOIESIS_REPO_ROOT", "/projects/app")).resolve()
+    repo_root = Path(environ.get("AUTOPOIESIS_REPO_ROOT", "/projects/app")).resolve()
     working_dir = Path.cwd().resolve()
     try:
         target, branch, created = prepare_task_branch(repo_root, working_dir, args.task_name)
