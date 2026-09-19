@@ -92,9 +92,7 @@ def prepare_task_branch(
 
     ensure_clean(target)
     branch = desired_branch
-    branch_ref = run_git(
-        target, "show-ref", "--verify", "--quiet", f"refs/heads/{branch}"
-    )
+    branch_ref = run_git(target, "show-ref", "--verify", "--quiet", f"refs/heads/{branch}")
     if branch_ref.returncode == 0:
         raise TaskBranchError(f"Branch {branch} already exists; choose a unique task name.")
 
