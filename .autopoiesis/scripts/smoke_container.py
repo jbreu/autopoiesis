@@ -12,6 +12,26 @@ assert (harness / "AGENTS.md").is_file()
 assert (root / "src/repo_demo").is_dir()
 assert os.access(root, os.W_OK)
 
+git_root = subprocess.run(
+    ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+    check=True,
+    capture_output=True,
+    text=True,
+    timeout=10,
+).stdout.strip()
+assert Path(git_root).resolve() == root
+
+tracked = set(
+    subprocess.run(
+        ["git", "-C", str(root), "ls-files"],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    ).stdout.splitlines()
+)
+assert {"AGENTS.md", ".autopoiesis/AGENTS.md", "src/repo_demo/__init__.py"} <= tracked
+
 for mounted, local in (
     (Path.home() / ".openhands", harness / "state"),
     (Path(os.environ["XDG_CACHE_HOME"]), harness / "cache"),
@@ -45,4 +65,4 @@ with tempfile.TemporaryDirectory() as directory:
     assert Path(os.environ["RUFF_CACHE_DIR"]) == harness / "cache/ruff"
     assert (harness / "cache/ruff").is_dir()
 
-print("Repository, agent instructions, state, temporary files, and cache mounts verified.")
+print("Full Git repository, agent instructions, state, temporary files, and cache verified.")

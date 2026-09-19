@@ -56,13 +56,35 @@ Container configuration.
 5. Verify with `docker compose -f .autopoiesis/compose.yaml exec agent gh auth status`.
 
 The entrypoint configures Git identity and the GitHub credential helper.
-`.autopoiesis/AGENTS.md` defines the Git workflow and is combined with the
-product-specific root `AGENTS.md`. It requires an `ai/*` task branch and a
-draft PR when GitHub delivery is requested. Branch protection is configured
-separately on GitHub.
 
-See [the first task](docs/first-task.md) for an example. The UI and terminal share
-one checkout; run only one writing task at a time.
+## Frontend tasks, branches, and delivery
+
+The full repository, including `.git`, is mounted at `/projects/app`. For the
+strongest isolation, select `/projects/app` as the workspace in Agent Canvas
+and use its new-worktree mode. Agent Canvas can then place the conversation on
+its own `openhands/*` worktree.
+
+The harness does not rely on that UI selection for branch safety. Before editing
+files, the agent instructions require
+`.autopoiesis/scripts/prepare_task.py <short-task-name>`. The helper reuses an
+existing OpenHands worktree when it belongs to this repository. Otherwise it
+falls back to the clean canonical checkout and creates an `ai/*` branch. It
+refuses to continue from a dirty fallback checkout.
+
+Task delivery is intentionally local-first:
+
+- implementation and verification happen on the task branch;
+- completed changes are committed locally;
+- nothing is pushed to origin unless the user explicitly requests a push;
+- a push request does not imply a pull request;
+- a PR is created only when the user explicitly requests one, and that request
+  also permits the prerequisite push.
+
+Requested PRs are drafts. The agent never merges them or force-pushes.
+
+See [the first task](docs/first-task.md) for an example. The canonical fallback
+checkout supports one writing task at a time; parallel tasks should use separate
+Agent Canvas worktrees.
 
 ## Checks
 
