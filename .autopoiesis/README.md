@@ -24,8 +24,13 @@ owns the checkout. On Windows, `python` can be used instead of `python3`.
 Open [Agent Canvas](http://localhost:8000/canvas), configure the local backend,
 a coding agent, and your model provider. The project path inside the container
 is **`/projects/app`**, the full repository. If prompted for a backend key, use
-LOCAL_BACKEND_API_KEY from `.autopoiesis/.env`. Ask the agent to read the root
-`AGENTS.md` before its first task.
+LOCAL_BACKEND_API_KEY from `.autopoiesis/.env`.
+
+OpenHands uses the root `AGENTS.md` as repository context. In this repository,
+that file contains product-specific guidance and explicitly delegates harness
+behavior to `.autopoiesis/AGENTS.md`. The Autopoiesis instruction contract
+requires the agent to read and apply both files before every task. This keeps
+product knowledge replaceable while the harness workflow remains reusable.
 
 Compose reads `.env` beside this Compose file. Its explicit project name is
 `autopoiesis`, preserving the original container identity after relocation.
@@ -50,9 +55,11 @@ Container configuration.
 4. Run `docker compose -f .autopoiesis/compose.yaml up -d --force-recreate`.
 5. Verify with `docker compose -f .autopoiesis/compose.yaml exec agent gh auth status`.
 
-The entrypoint configures Git identity and the GitHub credential helper. Working
-instructions require an `ai/*` task branch and draft PR when GitHub delivery is
-requested. Branch protection is configured separately on GitHub.
+The entrypoint configures Git identity and the GitHub credential helper.
+`.autopoiesis/AGENTS.md` defines the Git workflow and is combined with the
+product-specific root `AGENTS.md`. It requires an `ai/*` task branch and a
+draft PR when GitHub delivery is requested. Branch protection is configured
+separately on GitHub.
 
 See [the first task](docs/first-task.md) for an example. The UI and terminal share
 one checkout; run only one writing task at a time.

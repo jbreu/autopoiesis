@@ -1,40 +1,26 @@
-# Working in this repository
+# Product instructions
 
-This repository contains both the example application and the environment used
-to develop it. The harness lives in .autopoiesis. Read .autopoiesis/README.md
-and .autopoiesis/docs/architecture.md before changing the harness.
+This file contains product-specific guidance for the repository.
 
-## Scope and verification
+When this repository is developed through Autopoiesis, these instructions are
+combined with `.autopoiesis/AGENTS.md`. Read and apply both files before
+starting a task. Keep harness workflow, Git delivery, runtime, and security rules
+in `.autopoiesis/AGENTS.md` rather than duplicating them here.
 
-- Follow the user's concrete task and acceptance criteria.
-- Use English for repository documentation, code comments, and user-facing text.
-- Application code is in src/repo_demo; behavioral tests are in tests.
-- Preserve the documented CLI behavior unless the task asks to change it.
-- Keep the example's runtime dependency-free where practical.
-- Run `sh .autopoiesis/scripts/check.sh` after changes. In the container PROJECT_PYTHON is set.
-- Put agent scratch files in .autopoiesis/tmp, not the repository root.
-- Use a regression test when fixing an observable bug. Do not weaken existing
-  assertions merely to obtain a passing result.
-- Report exactly which checks ran and which could not run.
+## Product scope
 
-## Git workflow
+- Application code is in `src/repo_demo`; behavioral tests are in `tests`.
+- The current application is only an example product for exercising the
+  Autopoiesis harness.
+- Use English for product documentation, code comments, and user-facing text.
+- Preserve the documented CLI behavior unless the task explicitly changes it.
+- Keep the example application's runtime dependency-free where practical.
 
-- Use one task at a time in this checkout and a new `ai/<short-task-name>` branch.
-- Check the working tree first. Preserve unrelated user changes.
-- Commit only files belonging to the task, using explicit file paths when staging.
-- When the user requests delivery through GitHub, push the task branch and open a
-  draft PR with the problem, change and verification results. The container has gh.
-- Use `gh pr create --draft --base main --title ... --body-file .autopoiesis/tmp/pr-body.md`.
-  Write real newlines to the body file. Do not merge the PR or force-push.
-- If authentication is missing, retain the local commit and report the blocker.
+## Product verification
 
-## Runtime configuration
-
-- Never commit .env, credentials, session data or model transcripts.
-- Do not print tokens or the contents of .env in terminal output or a PR.
-- Preserve repository visibility, permissions and branch protection settings.
-- Changes to .autopoiesis/compose.yaml, .autopoiesis/Dockerfile.agent, CI or these
-  instructions must be explicitly relevant to the current task and described in the PR.
-- The running container does not rebuild itself after a Dockerfile edit.
-- If three attempts at the same failure produce no progress, stop and describe
-  the failure, evidence and next useful action.
+- Add or update behavioral tests for observable product changes.
+- Use a regression test when fixing an observable bug.
+- Do not weaken existing assertions merely to make a change pass.
+- Run the product tests relevant to the task. The Autopoiesis instructions
+  define the repository-wide check entrypoint that must also be run before
+  delivery.

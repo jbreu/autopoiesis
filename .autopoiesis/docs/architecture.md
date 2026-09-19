@@ -3,11 +3,14 @@
 ## Workflow
 
 1. The user assigns a task in Agent Canvas.
-2. The harness reads the project in /projects/app and communicates with the selected
+2. OpenHands loads the root AGENTS.md as repository context. The instruction
+   contract in that file and .autopoiesis/AGENTS.md requires both files to be
+   read and applied together.
+3. The harness reads the project in /projects/app and communicates with the selected
    model provider. File access, code execution, and Git commands run inside the container.
-3. The agent works on an ai/* branch and runs .autopoiesis/scripts/check.sh.
-4. With GH_TOKEN configured, it can push the branch and create a draft PR.
-5. GitHub Actions checks the code and container; the user decides whether to merge.
+4. The agent works on an ai/* branch and runs .autopoiesis/scripts/check.sh.
+5. With GH_TOKEN configured, it can push the branch and create a draft PR.
+6. GitHub Actions checks the code and container; the user decides whether to merge.
 
 ## Responsibilities
 
@@ -16,7 +19,8 @@
 | src/repo_demo and tests | Example application and behavioral tests |
 | .autopoiesis/Dockerfile.agent | OpenHands base image, Python tools, and GitHub CLI |
 | .autopoiesis/compose.yaml | Local startup, workspace, resources, and persistent data |
-| AGENTS.md | Project knowledge and agreed workflow |
+| AGENTS.md | Product-specific behavior, conventions, and product verification |
+| .autopoiesis/AGENTS.md | Agent workflow, Git delivery, runtime, security, and repository-wide verification |
 | .autopoiesis/scripts/check.sh | Shared checks for developers, agents, and CI |
 | .autopoiesis/tests | Harness initialization regression tests |
 | .autopoiesis/state, tmp, cache | Ignored runtime data, temporary files, and caches |
@@ -26,7 +30,10 @@
 Paths in this table are relative to the repository root. Open .autopoiesis in
 VS Code to discover its Dev Container; the container workspace is still the
 full repository. GitHub requires its workflow entrypoint in .github/workflows.
-AGENTS.md stays at the repository root for agent discovery.
+The root AGENTS.md remains the repository-context entrypoint. It points the agent
+to .autopoiesis/AGENTS.md, while the harness file points back to the root file.
+Harness regression tests verify that this two-file instruction contract remains
+connected.
 
 ## Why project tools are installed separately
 
@@ -59,8 +66,8 @@ allowlist excludes runtime state, secrets, caches, and temporary files.
 The health check verifies the web UI's HTTP response and Content-Type, as well
 as the backend's /ready endpoint. An actual model task and GitHub push require
 your own credentials and are intended to be checked in a manual end-to-end test.
-The maximum number of repair attempts in AGENTS.md is an instruction; enforcing
-a task time limit requires an external dispatcher.
+The maximum number of repair attempts in .autopoiesis/AGENTS.md is an
+instruction; enforcing a task time limit requires an external dispatcher.
 
 ## Future extensions
 
