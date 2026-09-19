@@ -84,7 +84,10 @@ def prepare_task_branch(
 
     ensure_clean(target)
     branch = f"ai/{normalize_slug(task_name)}"
-    if run_git(target, "show-ref", "--verify", "--quiet", f"refs/heads/{branch}").returncode == 0:
+    branch_ref = run_git(
+        target, "show-ref", "--verify", "--quiet", f"refs/heads/{branch}"
+    )
+    if branch_ref.returncode == 0:
         raise TaskBranchError(f"Branch {branch} already exists; choose a unique task name.")
 
     git(target, "switch", "-c", branch)
