@@ -3,7 +3,8 @@
 Use this task in the web interface after configuring model and GitHub access.
 The project directory is /projects/app.
 
-> Read AGENTS.md and README.md. Extend the example CLI with a --json option.
+> Read AGENTS.md, .autopoiesis/AGENTS.md, and README.md. Apply both AGENTS files
+> together. Extend the example CLI with a --json option.
 > It should output a JSON object with the integer fields characters, words,
 > and lines. Without --json, preserve the existing text output.
 > The option must work with both a text argument and stdin.

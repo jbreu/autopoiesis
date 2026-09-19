@@ -8,6 +8,7 @@ from pathlib import Path
 root = Path("/projects/app")
 harness = root / ".autopoiesis"
 assert (root / "AGENTS.md").is_file()
+assert (harness / "AGENTS.md").is_file()
 assert (root / "src/repo_demo").is_dir()
 assert os.access(root, os.W_OK)
 
@@ -44,4 +45,4 @@ with tempfile.TemporaryDirectory() as directory:
     assert Path(os.environ["RUFF_CACHE_DIR"]) == harness / "cache/ruff"
     assert (harness / "cache/ruff").is_dir()
 
-print("Repository, state, temporary files, and cache mounts verified.")
+print("Repository, agent instructions, state, temporary files, and cache mounts verified.")
