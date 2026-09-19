@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Select or create the isolated Git branch used for an Autopoiesis task."""
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser  # noqa: I001
 from os import environ
 from pathlib import Path
 from re import sub
