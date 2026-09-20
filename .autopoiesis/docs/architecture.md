@@ -35,11 +35,13 @@
 | .autopoiesis/tests | Harness initialization regression tests |
 | .autopoiesis/state, tmp, cache | Ignored runtime data, temporary files, and caches |
 | .github/workflows/ci.yml | Independent checks on the CI runner |
-| .autopoiesis/.devcontainer/devcontainer.json | Optional interactive IDE access |
+| .devcontainer/devcontainer.json | Discoverable VS Code entrypoint using the harness Compose file |
 
-Paths in this table are relative to the repository root. Open .autopoiesis in
-VS Code to discover its Dev Container; the container workspace is still the
-full repository. GitHub requires its workflow entrypoint in .github/workflows.
+Paths in this table are relative to the repository root. Open the repository root
+in VS Code to discover its Dev Container; the container workspace is the full
+repository. The Dev Container entrypoint lives in .devcontainer for discovery,
+while Compose and the Dockerfile remain in .autopoiesis. GitHub requires its
+workflow entrypoint in .github/workflows.
 The root AGENTS.md remains the repository-context entrypoint. It points the agent
 to .autopoiesis/AGENTS.md, while the harness file points back to the root file.
 Harness regression tests verify that this two-file instruction contract remains

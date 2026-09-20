@@ -38,11 +38,15 @@ You can also run `docker compose ...` from inside `.autopoiesis`.
 
 ## VS Code
 
-Open the **`.autopoiesis` folder** in VS Code, then select **Dev Containers:
-Reopen in Container**. Its `.devcontainer/devcontainer.json` uses this Compose
-file and opens the full checkout at `/projects/app`. Run the initializer first.
-Opening the repository root does not automatically discover the nested Dev
-Container configuration.
+Run the initializer above first, then open the **repository root** in VS Code
+with the **Dev Containers** extension installed and Docker running. Select
+**Reopen in Container** when prompted, or run **Dev Containers: Reopen in
+Container** from the Command Palette.
+
+The root `.devcontainer/devcontainer.json` is automatically discoverable and
+references `.autopoiesis/compose.yaml`. It opens the full checkout at
+`/projects/app`; the Compose file, Dockerfile, and runtime state remain in
+`.autopoiesis/`. Opening the folder locally does not itself start the container.
 
 ## GitHub access
 
