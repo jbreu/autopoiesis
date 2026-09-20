@@ -26,6 +26,18 @@ a coding agent, and your model provider. The project path inside the container
 is **`/projects/app`**, the full repository. If prompted for a backend key, use
 LOCAL_BACKEND_API_KEY from `.autopoiesis/.env`.
 
+Compose mounts `config/autopoiesis-repository.md` as an always-loaded OpenHands
+user skill. New chats automatically receive the repository path and instructions
+to read both `AGENTS.md` files, including when Canvas starts in an empty scratch
+workspace. This supplies context to OpenHands and ACP agents; it does not change
+the workspace picker or move existing conversations. Select `/projects/app` and
+new-worktree mode when you want Canvas to create an isolated repository worktree.
+
+After updating an existing installation, run the initializer and the Compose
+startup command above again, then start a new chat. Existing conversations retain
+their saved context. The mounted instruction file is read-only and user-created
+skills in `state/skills/` are preserved.
+
 OpenHands uses the root `AGENTS.md` as repository context. In this repository,
 that file contains product-specific guidance and explicitly delegates harness
 behavior to `.autopoiesis/AGENTS.md`. The Autopoiesis instruction contract

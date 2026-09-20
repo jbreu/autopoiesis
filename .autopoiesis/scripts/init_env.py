@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def initialize(root: Path) -> bool:
-    for directory in ("state", "tmp", "cache"):
+    for directory in ("state", "state/skills", "tmp", "cache"):
         (root / directory).mkdir(mode=0o700, exist_ok=True)
     template = (root / ".env.example").read_text(encoding="utf-8")
     template = template.replace(
