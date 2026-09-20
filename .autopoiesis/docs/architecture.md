@@ -5,6 +5,10 @@
 1. The user assigns a task in Agent Canvas.
 2. The full checkout at `/projects/app`, including `.git`, is available to the
    harness.
+   Compose mounts `config/autopoiesis-repository.md` into the OpenHands user skill
+   directory as always-loaded repository context. This bootstraps discovery of
+   the checkout and its instruction files even from Canvas scratch workspaces,
+   for both OpenHands and ACP agents. It does not relocate conversation workspaces.
 3. OpenHands loads the root `AGENTS.md` as repository context. The instruction
    contract in that file and `.autopoiesis/AGENTS.md` requires both files to be
    read and applied together.
@@ -28,6 +32,7 @@
 | src/repo_demo and tests | Example application and behavioral tests |
 | .autopoiesis/Dockerfile.agent | OpenHands base image, Python tools, and GitHub CLI |
 | .autopoiesis/compose.yaml | Local startup, workspace, resources, and persistent data |
+| .autopoiesis/config/autopoiesis-repository.md | Always-loaded repository location and instruction entrypoints |
 | AGENTS.md | Product-specific behavior, conventions, and product verification |
 | .autopoiesis/AGENTS.md | Agent workflow, Git delivery, runtime, security, and repository-wide verification |
 | .autopoiesis/scripts/prepare_task.py | Select or create the safe branch/worktree for a task |

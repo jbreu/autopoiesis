@@ -26,7 +26,7 @@ class EnvironmentTests(unittest.TestCase):
             harness = self.prepare(root)
             self.assertTrue(init_env.initialize(harness))
             self.assertEqual(list(root.iterdir()), [harness])
-            for name in ("state", "tmp", "cache"):
+            for name in ("state", "state/skills", "tmp", "cache"):
                 self.assertTrue((harness / name).is_dir())
             values = dict(
                 line.split("=", 1)
@@ -46,9 +46,14 @@ class EnvironmentTests(unittest.TestCase):
             (harness / "state").mkdir()
             state = harness / "state/session.json"
             state.write_text("existing session")
+            skills = harness / "state/skills"
+            skills.mkdir()
+            user_skill = skills / "user-guidance.md"
+            user_skill.write_text("Keep user guidance")
             self.assertFalse(init_env.initialize(harness))
             self.assertEqual((harness / ".env").read_bytes(), original)
             self.assertEqual(state.read_text(), "existing session")
+            self.assertEqual(user_skill.read_text(), "Keep user guidance")
             self.assertTrue((harness / "tmp").is_dir())
             self.assertTrue((harness / "cache").is_dir())
 

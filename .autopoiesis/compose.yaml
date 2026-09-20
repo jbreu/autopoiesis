@@ -30,6 +30,7 @@ services:
     volumes:
       - ..:/projects/app
       - ./state:/home/openhands/.openhands
+      - ./config/autopoiesis-repository.md:/home/openhands/.openhands/skills/autopoiesis-repository.md:ro
       - ./tmp:/tmp
       - ./cache:/home/openhands/.cache
     cap_drop:
