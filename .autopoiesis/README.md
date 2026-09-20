@@ -21,7 +21,7 @@ ignored `state`, `tmp`, and `cache` directories. Existing keys and state are
 preserved. On Linux it uses your user/group IDs; run it as a regular user who
 owns the checkout. On Windows, `python` can be used instead of `python3`.
 
-Open [Agent Canvas](http://localhost:8000/canvas), configure the local backend,
+Open http://localhost:8000/canvas, configure the local backend,
 a coding agent, and your model provider. The project path inside the container
 is **`/projects/app`**, the full repository. If prompted for a backend key, use
 LOCAL_BACKEND_API_KEY from `.autopoiesis/.env`.
@@ -126,11 +126,11 @@ Run these commands **from `.autopoiesis`**:
 
 Runtime directories are bind-mounted from this folder:
 
-| Host directory | Container path | Contents |
-| --- | --- | --- |
-| `state/` | `/home/openhands/.openhands` | Sessions, settings, model credentials, automation data |
-| `tmp/` | `/tmp` | Runtime temporary files and agent scratch files |
-| `cache/` | `/home/openhands/.cache` | User tool caches |
+| Host directory | Container path               | Contents                                               |
+| -------------- | ---------------------------- | ------------------------------------------------------ |
+| `state/`       | `/home/openhands/.openhands` | Sessions, settings, model credentials, automation data |
+| `tmp/`         | `/tmp`                       | Runtime temporary files and agent scratch files        |
+| `cache/`       | `/home/openhands/.cache`     | User tool caches                                       |
 
 These directories and `.env` are ignored by Git and excluded from the image build.
 `docker compose down`, including `--volumes`, preserves the bind-mounted data.
