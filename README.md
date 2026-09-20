@@ -30,7 +30,6 @@ The implementation is centered around `.autopoiesis/`:
 ```text
 .
 ├── .autopoiesis/
-│   ├── .devcontainer/       # optional VS Code entrypoint
 │   ├── docs/                # harness architecture and usage
 │   ├── scripts/             # initialization, checks, smoke tests
 │   ├── tests/               # harness regression tests
@@ -38,6 +37,7 @@ The implementation is centered around `.autopoiesis/`:
 │   ├── compose.yaml         # workspace, state and runtime wiring
 │   ├── requirements-dev.txt
 │   └── README.md            # detailed harness operation
+├── .devcontainer/           # discoverable VS Code entrypoint
 ├── .github/workflows/ci.yml # independent GitHub CI entrypoint
 ├── AGENTS.md                # repository/product instructions
 ├── src/                     # replaceable example product

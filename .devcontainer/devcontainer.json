@@ -1,6 +1,6 @@
 {
   "name": "Autopoiesis",
-  "dockerComposeFile": "../compose.yaml",
+  "dockerComposeFile": "../.autopoiesis/compose.yaml",
   "service": "agent",
   "workspaceFolder": "/projects/app",
   "remoteUser": "openhands",
